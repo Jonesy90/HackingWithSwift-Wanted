@@ -26,6 +26,7 @@ struct ContentView: View {
                 renderedPoster?
                     .resizable()
                     .scaledToFill()
+                    .listRowInsets(EdgeInsets())
                 
                 Section {
                     PhotosPicker("Select an image", selection: $inputPickerItem, matching: .images)
@@ -49,29 +50,36 @@ struct ContentView: View {
             }
             .navigationTitle("Design Your Poster")
             .navigationBarTitleDisplayMode(.inline)
+            /// if any of these variables changes value, run the render again with the new value.
+            .onChange(of: [crime, reward, contact, String(paperOpacity)], render)
+            
+            /// reducing the spacing in-between the sections.
+            .listSectionSpacing(.compact)
+            
+            /// allows the user to remove the keyboard by scrolling it away.
+            .scrollDismissesKeyboard(.interactively)
+            
+            /// when the user has chosen a new picture, it will launch a new background task, that will load the data into inputImage.
+            .onChange(of: inputPickerItem) {
+                Task {
+                    /// take the image from the inputPickerItem and give it to inputImage.
+                    inputImage = try? await inputPickerItem?.loadTransferable(type: Image.self)
+                    /// calls render to use the new image.
+                    render()
+                }
+            }
+            /// allows the user to save or share the rendered image.
+            .toolbar {
+                if let renderedPoster {
+                    ShareLink(item: renderedPoster, preview: SharePreview("Wanted for \(crime)", image: renderedPoster))
+                }
+            }
         }
         /// run this function when the body appears.
         .onAppear(perform: render)
-        
-        /// if any of these variables changes value, run the render again with the new value.
-        .onChange(of: [crime, reward, contact, String(paperOpacity)], render)
-        
-        /// when the user has chosen a new picture, it will launch a new background task, that will load the data into inputImage.
-        .onChange(of: inputPickerItem) {
-            Task {
-                /// take the image from the inputPickerItem and give it to inputImage.
-                inputImage = try? await inputPickerItem?.loadTransferable(type: Image.self)
-                /// calls render to use the new image.
-                render()
-            }
-            
-        }
-        .toolbar {
-            if let renderedPoster {
-                ShareLink(item: renderedPoster, preview: SharePreview("Wanted for \(crime)", image: renderedPoster))
-            }
-        }
     }
+    
+
     
     
     /// turn the SwiftUI View into an Image and sends the image to the variable 'renderedPoster'.
