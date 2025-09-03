@@ -21,6 +21,7 @@ struct ContentView: View {
             .navigationTitle("Design Your Poster")
             .navigationBarTitleDisplayMode(.inline)
         }
+        /// run this function when the body appears.
         .onAppear(perform: render)
     }
     
@@ -28,6 +29,9 @@ struct ContentView: View {
     /// turn the SwiftUI View into an Image and sends the image to the variable 'renderedPoster'.
     func render() {
         let render = ImageRenderer(content: WantedPosterView(crime: "Texting", reward: "$500", contact: "Police", paperOpacity: 0.5))
+        
+        /// increases the resolution of the image by 3.
+        render.scale = 3
         
         if let image = render.uiImage {
             renderedPoster = Image(uiImage: image)
