@@ -48,7 +48,15 @@ struct WantedPosterView: View {
                     .tracking(2)
                     .foregroundStyle(.darkBrown)
                 
-                image
+                image?
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 270, height: 270)
+                    .clipShape(Circle())
+                    .grayscale(1)
+                    .blendMode(.multiply)
+                    .overlay(Circle().strokeBorder(.darkBrown, lineWidth: 8))
+                    .padding(.vertical)
                 
                 Text("For \(crime)")
                     .font(.custom("Copperplate", size: 22))

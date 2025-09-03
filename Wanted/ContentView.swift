@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 struct ContentView: View {
     /// a property that stores our rendered image.
@@ -16,12 +17,19 @@ struct ContentView: View {
     @AppStorage("contact") private var contact = "Contact Camberley Police for more information"
     @AppStorage("paperOpacity") private var paperOpacity: Double = 0.75
     
+    @State private var inputPickerItem: PhotosPickerItem?
+    @State private var inputImage: Image?
+    
     var body: some View {
         NavigationStack {
             Form {
                 renderedPoster?
                     .resizable()
                     .scaledToFill()
+                
+                Section {
+                    PhotosPicker("Select an image", selection: $inputPickerItem, matching: .images)
+                }
                 
                 Section("What is their crime?") {
                     TextField("Enter their crime", text: $crime, axis: .vertical)
@@ -47,12 +55,22 @@ struct ContentView: View {
         
         /// if any of these variables changes value, run the render again with the new value.
         .onChange(of: [crime, reward, contact, String(paperOpacity)], render)
+        
+        /// when the user has chosen a new picture, it will launch a new background task, that will load the data into inputImage.
+        .onChange(of: inputPickerItem) {
+            Task {
+                /// take the image from the inputPickerItem and give it to inputImage.
+                inputImage = try? await inputPickerItem?.loadTransferable(type: Image.self)
+                /// calls render to use the new image.
+                render()
+            }
+        }
     }
     
     
     /// turn the SwiftUI View into an Image and sends the image to the variable 'renderedPoster'.
     func render() {
-        let render = ImageRenderer(content: WantedPosterView(crime: crime, reward: reward, contact: contact, paperOpacity: paperOpacity))
+        let render = ImageRenderer(content: WantedPosterView(image: inputImage, crime: crime, reward: reward, contact: contact, paperOpacity: paperOpacity))
         
         /// increases the resolution of the image by 3.
         render.scale = 3
