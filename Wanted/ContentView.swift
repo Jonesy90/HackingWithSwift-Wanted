@@ -12,13 +12,26 @@ struct ContentView: View {
     @State private var renderedPoster: Image?
     
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationStack {
+            Form {
+                renderedPoster?
+                    .resizable()
+                    .scaledToFill()
+            }
+            .navigationTitle("Design Your Poster")
+            .navigationBarTitleDisplayMode(.inline)
         }
-        .padding()
+        .onAppear(perform: render)
+    }
+    
+    
+    /// turn the SwiftUI View into an Image and sends the image to the variable 'renderedPoster'.
+    func render() {
+        let render = ImageRenderer(content: WantedPosterView(crime: "Texting", reward: "$500", contact: "Police", paperOpacity: 0.5))
+        
+        if let image = render.uiImage {
+            renderedPoster = Image(uiImage: image)
+        }
     }
 }
 
