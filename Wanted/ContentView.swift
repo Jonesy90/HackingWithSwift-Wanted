@@ -22,12 +22,31 @@ struct ContentView: View {
                 renderedPoster?
                     .resizable()
                     .scaledToFill()
+                
+                Section("What is their crime?") {
+                    TextField("Enter their crime", text: $crime, axis: .vertical)
+                }
+                
+                Section("What's the reward?") {
+                    TextField("Enter the reward", text: $reward)
+                }
+                
+                Section("Who should they contact?") {
+                    TextField("Enter a contact", text: $contact, axis: .vertical)
+                }
+                
+                Section("Paper Opacity") {
+                    Slider(value: $paperOpacity, in: 0...1)
+                }
             }
             .navigationTitle("Design Your Poster")
             .navigationBarTitleDisplayMode(.inline)
         }
         /// run this function when the body appears.
         .onAppear(perform: render)
+        
+        /// if any of these variables changes value, run the render again with the new value.
+        .onChange(of: [crime, reward, contact, String(paperOpacity)], render)
     }
     
     
