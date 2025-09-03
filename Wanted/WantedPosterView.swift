@@ -25,6 +25,14 @@ struct WantedPosterView: View {
         ZStack {
             Color.white
             
+            /// the paper image added behind the text.
+            Image(.paper)
+                .resizable()
+                .scaledToFill()
+                /// prevents the text to on beyond the size of the view.
+                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
+                .opacity(paperOpacity)
+            
             VStack(spacing: 0) {
                 Text("WANTED")
                     .font(.custom("Superclarendon", size: 60))
@@ -68,6 +76,7 @@ struct WantedPosterView: View {
                     .font(.custom("Copperplate", size: 18))
                     .multilineTextAlignment(.center)
                     .tracking(3)
+                    .bold()
                     .foregroundStyle(.darkBrown)
                     .padding(.bottom, 10)
             }
@@ -83,5 +92,5 @@ struct WantedPosterView: View {
 }
 
 #Preview {
-    WantedPosterView(crime: "Texting", reward: "$500", contact: "Police", paperOpacity: 0.5)
+    WantedPosterView(crime: "Texting", reward: "$500", contact: "Police", paperOpacity: 1.0)
 }
