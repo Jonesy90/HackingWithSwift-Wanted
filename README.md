@@ -14,3 +14,5 @@ extension ShapeStyle where Self == Color {
     }
 }
 ```
+2. The ImageRenderer method to convert a SwiftUI View into a Image.
+3. Introduction to the PhotosUI library and updating the plsit settings to allow the user to save the rendered image to their photos library.
